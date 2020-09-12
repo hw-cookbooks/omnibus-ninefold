@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: omnibus-ninefold
+# Cookbook:: omnibus-ninefold
 # Recipe:: default
 #
-# Copyright 2012, Heavy Water Operations, LLC
+# Copyright:: 2012, Heavy Water Operations, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,18 +17,18 @@
 # limitations under the License.
 #
 
-include_recipe "ubuntu"
+include_recipe 'ubuntu'
 
-node.default['ruby_installer']['package_name'] = "ruby1.9.3"
-node.default['ruby_installer']['rubydev_package'] = "ruby1.9.1-dev"
+node.default['ruby_installer']['package_name'] = 'ruby1.9.3'
+node.default['ruby_installer']['rubydev_package'] = 'ruby1.9.1-dev'
 
-include_recipe "ruby_installer"
+include_recipe 'ruby_installer'
 
-include_recipe "reprepro"
-include_recipe "build-essential"
-include_recipe "git"
+include_recipe 'reprepro'
+build_essential 'install compilation tools'
+include_recipe 'git'
 
-gem_package "bundler"
+gem_package 'bundler'
 
 git node['omnibus-ninefold']['directory'] do
   repository node['omnibus-ninefold']['git_url']
@@ -36,9 +36,9 @@ git node['omnibus-ninefold']['directory'] do
   action node['omnibus-ninefold']['git_action']
 end
 
-execute "omnibus-ninefold: bundle" do
-  command "bundle install --deployment"
-  subscribes :run, resources(:git => node['omnibus-ninefold']['directory']), :immediately
+execute 'omnibus-ninefold: bundle' do
+  command 'bundle install --deployment'
+  subscribes :run, "git[#{node['omnibus-ninefold']['directory']}]", :immediately
   cwd node['omnibus-ninefold']['directory']
-  creates File.join(node['omnibus-ninefold']['directory'], ".bundle")
+  creates File.join(node['omnibus-ninefold']['directory'], '.bundle')
 end
